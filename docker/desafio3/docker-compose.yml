@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  web:
+    build: ./app
+    container_name: d3-web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - cache
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: desafio3
+      CACHE_HOST: cache
+    networks:
+      - d3-net
+
+  db:
+    image: postgres:15
+    container_name: d3-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: desafio3
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - d3-net
+
+  cache:
+    image: redis:6
+    container_name: d3-cache
+    networks:
+      - d3-net
+
+networks:
+  d3-net:
+
+volumes:
+  dbdata:
